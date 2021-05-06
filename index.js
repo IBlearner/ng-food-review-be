@@ -1,13 +1,14 @@
 const express = require('express')
 const app = express()
 const port = 3000
+require("dotenv").config()
 
 var mysql   = require('mysql');
 var connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : 'Kienvi1996',
-    database : 'food-review'
+    host     : process.env.DB_HOST,
+    user     : process.env.DB_USER,
+    password : process.env.DB_PASSWORD,
+    database : process.env.DB_NAME
 });
  
 connection.connect((err) => {
@@ -56,9 +57,10 @@ app.delete('/all', (req, res) => {
     });
 })
 
-app.delete('/all', (req, res) => {
-    res.send("delete route")
-    console.log("delete route")
+//considering using post instead as any field could be altered so might as well change that row anyway
+app.patch('/all', (req, res) => {
+    res.send("patch route")
+    console.log("patch route")
 })
 
 app.listen(port, () => {
