@@ -14,17 +14,17 @@ connection.connect((err) => {
     if (err) return console.log(`Error connecting: ${err.stack}`)
     console.log(`Connected as id ${connection.threadId}`)
 });
- 
-connection.query('SELECT 1 + 1 AS solution', (error, results, fields) => {
-    if (error) throw error;
-    console.log('The solution is: ', results[0].solution);
-});
 
 //app uses cors here
 
 app.get('/all', (req, res) => {
-    res.send("get route")
-    console.log("get route")
+    connection.query("SELECT * FROM data", (error, results, fields) => {
+        if (error) {
+            console.log(error.sqlMessage)
+            return res.status(500).send(error.sqlMessage)
+        }
+        res.status(200).send(results)
+    });
 })
 
 app.post('/all', (req, res) => {
