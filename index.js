@@ -30,7 +30,7 @@ app.get('/all', (req, res) => {
 
 app.post('/all', (req, res) => {
     const { body } = req
-    connection.query(`INSERT INTO data (item, location, imgURL, rating) values ("${body.item}", "${body.location}", "${body.imgURL}", ${body.rating})`, (error, results, fields) => {
+    connection.query(`INSERT INTO data (item, location, imgURL, rating) VALUES ("${body.item}", "${body.location}", "${body.imgURL}", ${body.rating})`, (error, results, fields) => {
         if (error) {
             console.log(error.sqlMessage)
             return res.status(500).send(error.sqlMessage)
@@ -42,9 +42,18 @@ app.post('/all', (req, res) => {
     });
 })
 
-app.patch('/all', (req, res) => {
-    res.send("patch route")
-    console.log("patch route")
+app.delete('/all', (req, res) => {
+    const { id } = req.body
+    connection.query(`DELETE FROM data WHERE id = ${id}`, (error, results, fields) => {
+        if (error) {
+            console.log(error.sqlMessage)
+            return res.status(500).send(error.sqlMessage)
+        }
+        if (results.affectedRows === 1) {
+            console.log(`Deleted item ${id}`)
+            return res.sendStatus(200)
+        }
+    });
 })
 
 app.delete('/all', (req, res) => {
