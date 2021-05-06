@@ -15,7 +15,8 @@ connection.connect((err) => {
     console.log(`Connected as id ${connection.threadId}`)
 });
 
-//app uses cors here
+//app to use cors when implementing fe
+app.use(express.json())     //telling express to use json
 
 app.get('/all', (req, res) => {
     connection.query("SELECT * FROM data", (error, results, fields) => {
@@ -28,8 +29,17 @@ app.get('/all', (req, res) => {
 })
 
 app.post('/all', (req, res) => {
-    res.send("post route")
-    console.log("post route")
+    const { body } = req
+    connection.query(`INSERT INTO data (item, location, imgURL, rating) values ("${body.item}", "${body.location}", "${body.imgURL}", ${body.rating})`, (error, results, fields) => {
+        if (error) {
+            console.log(error.sqlMessage)
+            return res.status(500).send(error.sqlMessage)
+        }
+        if (results.affectedRows === 1) {
+            console.log(`Added "${body.item}"`)
+            return res.sendStatus(200)
+        }
+    });
 })
 
 app.patch('/all', (req, res) => {
