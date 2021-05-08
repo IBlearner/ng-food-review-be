@@ -1,9 +1,14 @@
 const express = require('express')
 const app = express()
+const cors = require("cors")
 const port = 3000
 require("dotenv").config()
 
-var mysql   = require('mysql');
+//app to use cors when implementing fe
+app.use(express.json())     //telling express to use json
+app.use(cors())
+
+var mysql = require('mysql');
 var connection = mysql.createConnection({
     host     : process.env.DB_HOST,
     user     : process.env.DB_USER,
@@ -15,9 +20,6 @@ connection.connect((err) => {
     if (err) return console.log(`Error connecting: ${err.stack}`)
     console.log(`Connected as id ${connection.threadId}`)
 });
-
-//app to use cors when implementing fe
-app.use(express.json())     //telling express to use json
 
 app.get('/all', (req, res) => {
     connection.query("SELECT * FROM data", (error, results, fields) => {
